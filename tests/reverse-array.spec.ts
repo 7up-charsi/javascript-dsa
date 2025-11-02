@@ -1,17 +1,23 @@
 import { describe, expect, it } from "vitest";
 import {
 	reverseArrayNative,
-	reverseArrayWith2Pointers,
-	reverseArrayWithNewArray,
+	reverseArrayNewArray,
+	reverseArrayRecursive,
+	reverseArrayReduce,
+	reverseArrayTwoPointers,
+	reverseArrayWhile,
 } from "../src/reverse-array.ts";
 
 const implementations = {
 	native: reverseArrayNative,
-	twoPointers: reverseArrayWith2Pointers,
-	newArray: reverseArrayWithNewArray,
+	twoPointers: reverseArrayTwoPointers,
+	newArray: reverseArrayNewArray,
+	reduce: reverseArrayReduce,
+	whileLoop: reverseArrayWhile,
+	recursive: reverseArrayRecursive,
 };
 
-describe("Reverse Array - Extended Tests", () => {
+describe("Reverse Array - All Implementations", () => {
 	for (const [name, fn] of Object.entries(implementations)) {
 		describe(`${name} implementation`, () => {
 			it("should reverse a numeric array", () => {
@@ -26,10 +32,6 @@ describe("Reverse Array - Extended Tests", () => {
 				expect(fn([1, "2", 3, "4"])).toEqual(["4", 3, "2", 1]);
 			});
 
-			it("should reverse an array with nested arrays", () => {
-				expect(fn([1, [2, 3], 4])).toEqual([4, [2, 3], 1]);
-			});
-
 			it("should reverse an empty array", () => {
 				expect(fn([])).toEqual([]);
 			});
@@ -38,12 +40,17 @@ describe("Reverse Array - Extended Tests", () => {
 				expect(fn([42])).toEqual([42]);
 			});
 
+			it("should reverse an array with nested arrays", () => {
+				expect(fn([1, [2, 3], 4])).toEqual([4, [2, 3], 1]);
+			});
+
 			it("should reverse an array with repeated elements", () => {
 				expect(fn([1, 1, 2, 2, 3, 3])).toEqual([3, 3, 2, 2, 1, 1]);
 			});
 
-			it("should not modify the original array for native and newArray", () => {
+			it("should not modify the original array for new-array returning functions", () => {
 				if (name !== "twoPointers") {
+					// twoPointers mutates in place
 					const arr = [1, 2, 3];
 					const copy = [...arr];
 					fn(arr);
@@ -51,7 +58,7 @@ describe("Reverse Array - Extended Tests", () => {
 				}
 			});
 
-			it("should modify the original array for twoPointers", () => {
+			it("should modify the original array for in-place functions", () => {
 				if (name === "twoPointers") {
 					const arr = [1, 2, 3];
 					fn(arr);
